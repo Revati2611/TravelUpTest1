@@ -1,0 +1,91 @@
+﻿@model TravelUpTask1.Models.ItemModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+<form id="itemForm">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>ItemModel</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "Name", required = "required" })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @id = "Description", required = "required" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+    </form>
+    <script>
+
+    $(document).ready(function () {
+        $("#itemForm").submit(function (event) {
+            event.preventDefault();
+            var name = $("#Name").val().trim();
+            var description = $("#Description").val().trim();
+            if (!name) {
+                alert("Name is required.").css("color", "red");
+            }
+            //else if (name.length < 5) {
+            //    alert("Name must be at least 5 characters long.").css("color", "red");
+        //}
+            else if (!/^[A-Za-z]+(\s[A-Za-z]+)*$/.test(name)) {
+                alert("Name must be alphanumeric.").css("color", "red");
+            }
+            if (!description) {
+                alert("Description is required.").css("color", "red");
+            }
+            else if (!/^[A-Za-z]+(\s[A-Za-z]+)*$/.test(description)) {
+                alert("Description must be alphanumeric.").css("color", "red");
+            }
+        // Perform AJAX request to add item
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit")',
+            data: {
+                Name: name,
+                Description: description
+            },
+            success: function () {
+                //alert("Item added successfully!").css("color", "green")
+                window.location.href = 'https://localhost:44331/';
+            },
+            error: function () {
+                alert("Error adding item.").css("color", "red");
+            }
+        });
+    });
+});
+
+    </script>
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
